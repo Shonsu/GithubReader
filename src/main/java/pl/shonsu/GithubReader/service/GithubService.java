@@ -19,6 +19,8 @@ import reactor.core.publisher.Mono;
 @Service
 public class GithubService {
 
+    private static final String TOKEN = "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";
+    
     @Autowired
     private WebClient webClient;
 
@@ -27,6 +29,7 @@ public class GithubService {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/repos/{userName}/{repository}/branches")
                         .build(userName, repository))
+                .headers(headers -> headers.setBearerAuth(TOKEN))
                 .retrieve()
                 .onStatus(HttpStatus.NOT_FOUND::equals,
                         response -> Mono.error(
@@ -41,6 +44,7 @@ public class GithubService {
                 .uri(uriBuilder -> uriBuilder
                         .path("/users/{userName}")
                         .build(userName))
+                .headers(headers -> headers.setBearerAuth(TOKEN))
                 .retrieve()
                 .onStatus(HttpStatus.NOT_FOUND::equals,
                         response -> Mono.error(
@@ -53,6 +57,7 @@ public class GithubService {
     public List<GHRepository> getReposByUserName(String userName) {
         List<GHRepository> ghRepository = webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/users/{userName}/repos").build(userName))
+                .headers(headers -> headers.setBearerAuth(TOKEN))
                 .retrieve()
                 .onStatus(HttpStatus.NOT_FOUND::equals,
                         response -> Mono.error(
@@ -62,10 +67,10 @@ public class GithubService {
         return ghRepository;
     }
 
-    public List<String> getReposNoFork(List<GHRepository> ghRepository) {
+    public List<GHRepository> getReposNoFork(List<GHRepository> ghRepository) {
         return ghRepository.stream()
                 .filter(repo -> !repo.getFork())
-                .map(repo -> repo.getName())
+                .map(repo -> repo)
                 .toList();
 
     }
@@ -76,9 +81,8 @@ public class GithubService {
                 .toList();
     }
 
-    public List<SimpleRepository> getUserSimpleRepos(String userName) {
+    public List<SimpleRepository> createUserSimpleRepos(List<GHRepository> ghRepository) {
 
-        List<GHRepository> ghRepository = getReposByUserName(userName);
         List<SimpleRepository> simpleRepositories = ghRepository.stream()
                 .filter(repo -> !repo.getFork())
                 .map(repo -> new SimpleRepository(repo.getName(), repo.getOwner().getLogin(),
