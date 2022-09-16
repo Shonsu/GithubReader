@@ -1,3 +1,7 @@
+mvn spring-boot:run
+
+Endpoint http://localhost:8080/githubuser/{GHUserName}}/simplerepos
+
 As an api consumer, given username and header “Accept: application/json”, I would like to list all his github repositories, which are not forks. Information, which I require in the response, is:
 Repository Name
 Owner Login

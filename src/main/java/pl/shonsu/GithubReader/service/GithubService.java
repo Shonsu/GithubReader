@@ -19,12 +19,10 @@ import reactor.core.publisher.Mono;
 @Service
 public class GithubService {
 
-    private static final String TOKEN = "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";
-    
+
     @Autowired
     private WebClient webClient;
 
-    // https://api.github.com/repos/OWNER/REPO/branches
     public List<GHBranch> getBranchesForUserRepository(String userName, String repository) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/repos/{userName}/{repository}/branches")
