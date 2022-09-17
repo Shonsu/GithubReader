@@ -27,7 +27,6 @@ public class GithubService {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/repos/{userName}/{repository}/branches")
                         .build(userName, repository))
-                .headers(headers -> headers.setBearerAuth(TOKEN))
                 .retrieve()
                 .onStatus(HttpStatus.NOT_FOUND::equals,
                         response -> Mono.error(
@@ -42,7 +41,6 @@ public class GithubService {
                 .uri(uriBuilder -> uriBuilder
                         .path("/users/{userName}")
                         .build(userName))
-                .headers(headers -> headers.setBearerAuth(TOKEN))
                 .retrieve()
                 .onStatus(HttpStatus.NOT_FOUND::equals,
                         response -> Mono.error(
@@ -55,7 +53,6 @@ public class GithubService {
     public List<GHRepository> getReposByUserName(String userName) {
         List<GHRepository> ghRepository = webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/users/{userName}/repos").build(userName))
-                .headers(headers -> headers.setBearerAuth(TOKEN))
                 .retrieve()
                 .onStatus(HttpStatus.NOT_FOUND::equals,
                         response -> Mono.error(
