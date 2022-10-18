@@ -24,17 +24,14 @@ public class GHUserController {
         @ResponseStatus(HttpStatus.OK)
         @GetMapping("/githubuser/{userName}")
         public GHUser getGHUser(@PathVariable String userName) {
-
-                GHUser ghUser = githubService.getUser(userName);
-                return ghUser;
+                return githubService.getUser(userName);
         }
 
         @ResponseStatus(HttpStatus.OK)
         @GetMapping("githubuser/{userName}/repos")
         public List<GHRepository> getGHRepositoriesByUserName(@PathVariable String userName) {
 
-                List<GHRepository> ghRepository = githubService.getReposByUserName(userName);
-                return ghRepository;
+                return githubService.getReposByUserName(userName);
         }
 
         @ResponseStatus(HttpStatus.OK)
@@ -42,8 +39,7 @@ public class GHUserController {
         public List<GHBranch> getBranchesForUserRepository(@PathVariable String userName,
                         @PathVariable String repository) {
 
-                List<GHBranch> ghBranches = githubService.getBranchesForUserRepository(userName, repository);
-                return ghBranches;
+                return githubService.getBranchesForUserRepository(userName, repository);
         }
 
         @ResponseStatus(HttpStatus.OK)
